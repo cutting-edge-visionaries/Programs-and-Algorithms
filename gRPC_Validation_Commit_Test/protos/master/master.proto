@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package master;
+
+option go_package = "daad/protos/master";
+
+service Validation {
+  rpc SubmitRequest(ValidationRequest) returns (ValidationResponse);
+}
+
+service Commit {
+  rpc SubmitRequest(ValidationResponse) returns (CommitResponse);
+}
+
+// msg describing the request for validating the message
+message ValidationRequest {
+  string msg = 1;
+  int64 msg_id = 2;
+}
+
+// msg describing whether the validation request was successfully accepted
+message ValidationResponse {
+  enum ReturnType {
+    SUCCESS = 0;
+    FAILURE = 1;
+  }
+
+  string msg = 1;
+  int64 msg_id = 2;
+  ReturnType return_value = 3;
+
+  // cryptographic signature
+  bytes signature = 4;
+}
+
+// msg describing whether the message was successfully committed
+message CommitResponse {
+  enum ReturnType {
+    SUCCESS = 0;
+    FAILURE = 1;
+  }
+
+  ReturnType return_value = 1;
+}
